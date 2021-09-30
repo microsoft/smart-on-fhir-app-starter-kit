@@ -1,14 +1,58 @@
-# Project
+# Getting Started SMART on FHIR apps
+This starter-kit application is a simple SMART on FHIR App.
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+* Fetches Patient FHIR data
+* Displays Patient information using FHIR Visualizer
+* Allows User to Modify Patient information
 
-As the maintainer of this project, please make a few updates:
+# Demo
+![a gif showing the SMART app in action](https://github.com/SameerDoshi/SameerDoshi.github.io/blob/master/images/SMART-FHIR-Demo.gif?raw=true)
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+
+
+
+# Running this app locally (quick)
+1. ``` yarn install ```
+2. ``` yarn start ```
+3. [Goto SMART Launcher](https://launch.smarthealthit.org/)
+4. Leave everything as default, at the bottom of the form change the launch url to 
+```http://localhost:3000```
+5. Click Launch
+
+# Setup Identity Provider
+SMART on FHIR is secure and so this app will need to be able to fetch tokens from the same identity provider as your EMR.   
+
+# Running this app locally (EMR/Scenario Specific App Integration)
+
+## Setup Identitiy Provider
+[This guide](https://docs.microsoft.com/en-us/azure/healthcare-apis/azure-api-for-fhir/use-smart-on-fhir-proxy) walks through the setup process for a SMART on FHIR app using the Azure SMART Proxy for Azure Active Directory.
+
+Not covered: Running with an identity provider other than Azure Activer Directory.
+
+## Run the app
+1. Change client ID in index.js to the client ID generated in the above steps.
+2. ``` yarn start```
+3. Follow [these steps](https://techcommunity.microsoft.com/t5/healthcare-and-life-sciences/launching-a-smart-app-demystified/ba-p/2779729) to create a SMART Launcher from your EMR: 
+4. Click on the link
+
+
+
+# What's Next?
+Think about what this app does.  It has all the boiler plate you need to access and modify a FHIR resrouce.
+If you've ever had a piece of functionality you've wanted to add to an EMR you can code it in a SMART on FHIR app- using all the web dev tech you already know. Then just add that app to your EMR.
+
+An example use of this is the Chestist demo app that packages ML assisted image analysis.
+
+
+#References:
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+[Quickstart on deploying a SMART app in Azure](https://docs.microsoft.com/en-us/azure/healthcare-apis/azure-api-for-fhir/use-smart-on-fhir-proxy)
+
+[SMARTHealth's Quickstart](https://docs.smarthealthit.org/)
+
+[Cerner's Quickstart](https://engineering.cerner.com/smart-on-fhir-tutorial/)
+
 
 ## Contributing
 
