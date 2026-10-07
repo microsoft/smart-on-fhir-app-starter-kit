@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ask-matt-install-launch-app
   workflow_dispatch:
 
 permissions:

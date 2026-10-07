@@ -21,12 +21,13 @@ This starter-kit application is a simple SMART on FHIR App.
 
 # Deploying the web app to Azure
 
-The React app can be hosted as a static site with [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/getting-started). Hosting the files does not provision a FHIR service or configure SMART authentication.
+The React app can be hosted as a static site with [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/getting-started). You do **not** need approval from Microsoft to deploy your own copy: fork this repository to a GitHub account you control and deploy from that fork. Hosting the files does not provision a FHIR service or configure SMART authentication.
 
-1. Create an Azure Static Web App and choose **Other** as the deployment source so Azure doesn't create a second GitHub Actions workflow. The workflow in `.github/workflows/deploy-azure-static-web-apps.yml` builds the Create React App bundle and deploys the `build` directory.
-2. Copy the Static Web App deployment token into the repository's **Settings → Secrets and variables → Actions** as `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-3. Add repository variables `REACT_APP_SMART_CLIENT_ID` and `REACT_APP_SMART_SCOPE` for the public client ID and requested SMART scopes. These values are embedded in the browser bundle, so never put secrets in them. If unset, the app uses the SMART Launcher demo defaults.
-4. Push to `main` or run **Deploy to Azure Static Web Apps** from the Actions tab. Register the resulting HTTPS app URL as a redirect URI with the identity provider.
+1. Fork this repository, then push or merge the app changes into a branch in your fork. The included workflow is configured to run on `main` and `ask-matt-install-launch-app`; if you use another branch, update the workflow's `push.branches` list to match.
+2. Create an Azure Static Web App and select **Other** as the deployment source so Azure doesn't create a second GitHub Actions workflow. The included workflow builds the React app and deploys its `build` directory.
+3. In your fork's **Settings → Secrets and variables → Actions**, add the Static Web App deployment token as `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+4. Add repository variables `REACT_APP_SMART_CLIENT_ID` and `REACT_APP_SMART_SCOPE` for the public SMART client ID and requested scopes. These values are embedded in the browser bundle, so never put secrets in them. If unset, the app uses the SMART Launcher demo defaults.
+5. Push to a configured branch in your fork. Register the resulting HTTPS app URL as a redirect URI with the identity provider.
 
 The build currently uses Node.js 16 because this repository's older Create React App/PostCSS dependency chain fails on newer Node versions.
 
