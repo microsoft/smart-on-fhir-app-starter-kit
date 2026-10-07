@@ -19,21 +19,24 @@ This starter-kit application is a simple SMART on FHIR App.
 ```http://localhost:3000```
 5. Click Launch
 
-# Setup Identity Provider
-SMART on FHIR is secure and so this app will need to be able to fetch tokens from the same identity provider as your EMR.   
+# Deploying the web app to Azure
 
-# Running this app locally (EMR/Scenario Specific App Integration)
+The React app can be hosted as a static site with [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/getting-started). Hosting the files does not provision a FHIR service or configure SMART authentication.
 
-## Setup Identitiy Provider
-[This guide](https://docs.microsoft.com/en-us/azure/healthcare-apis/azure-api-for-fhir/use-smart-on-fhir-proxy) walks through the setup process for a SMART on FHIR app using the Azure SMART Proxy for Azure Active Directory.
+1. Create an Azure Static Web App and choose **Other** as the deployment source so Azure doesn't create a second GitHub Actions workflow. The workflow in `.github/workflows/deploy-azure-static-web-apps.yml` builds the Create React App bundle and deploys the `build` directory.
+2. Copy the Static Web App deployment token into the repository's **Settings → Secrets and variables → Actions** as `AZURE_STATIC_WEB_APPS_API_TOKEN`.
+3. Add repository variables `REACT_APP_SMART_CLIENT_ID` and `REACT_APP_SMART_SCOPE` for the public client ID and requested SMART scopes. These values are embedded in the browser bundle, so never put secrets in them. If unset, the app uses the SMART Launcher demo defaults.
+4. Push to `main` or run **Deploy to Azure Static Web Apps** from the Actions tab. Register the resulting HTTPS app URL as a redirect URI with the identity provider.
 
-Not covered: Running with an identity provider other than Azure Activer Directory.
+The build currently uses Node.js 16 because this repository's older Create React App/PostCSS dependency chain fails on newer Node versions.
 
-## Run the app
-1. Change client ID in index.js to the client ID generated in the above steps.
-2. ``` yarn start```
-3. Follow [these steps](https://techcommunity.microsoft.com/t5/healthcare-and-life-sciences/launching-a-smart-app-demystified/ba-p/2779729) to create a SMART Launcher from your EMR: 
-4. Click on the link
+## Connecting to Azure Health Data Services
+
+For a Microsoft Entra-backed SMART on FHIR setup, follow the current [Azure Health Data Services SMART on FHIR guidance](https://learn.microsoft.com/azure/healthcare-apis/fhir/smart-on-fhir) and the [Entra deployment guide](https://github.com/Azure-Samples/azure-health-data-and-ai-samples/blob/main/samples/smartonfhir-smartnative-v2/docs/deployment-entra.md) for the SMART gateway. To reuse an existing FHIR service, the gateway guide documents the `ExistingFhirServiceId` option and the required one-time FHIR audience and role configuration.
+
+**This starter app is not yet wired to that gateway.** It currently pins `fhirclient` 2.4.0, which lacks the PKCE support required by the gateway's public-client flow (newer `fhirclient` versions support PKCE). Upgrading the library alone is not sufficient: the gateway's SMART discovery/authorization URL and the FHIR service API URL are separate, while this starter currently uses a single server URL for both. The app needs an explicit integration change to authenticate against the gateway and send FHIR requests to the configured service. Changing the client ID or scopes alone is not enough. The Azure sample's [SMART client application](https://github.com/Azure-Samples/azure-health-data-and-ai-samples/tree/main/samples/SMART-Client-Application) demonstrates the gateway-supported flows; use it for an end-to-end Entra integration until this app's SMART client is updated.
+
+The app also includes a patient update form. The current Azure Health Data Services **FHIR SMART User** role supports read and search, not create/update/delete; the update form won't work with that role alone. Don't enable writes against real data until you have designed and configured a separately authorized write flow.
 
 
 
@@ -47,7 +50,7 @@ An example use of this is the Chestist demo app that packages ML assisted image 
 #References:
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-[Quickstart on deploying a SMART app in Azure](https://docs.microsoft.com/en-us/azure/healthcare-apis/azure-api-for-fhir/use-smart-on-fhir-proxy)
+[Azure Health Data Services SMART on FHIR guidance](https://learn.microsoft.com/azure/healthcare-apis/fhir/smart-on-fhir)
 
 [SMARTHealth's Quickstart](https://docs.smarthealthit.org/)
 

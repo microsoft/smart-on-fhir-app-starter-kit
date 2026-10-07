@@ -1,0 +1,43 @@
+name: Deploy to Azure Static Web Apps
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16.20.2
+
+      - name: Install Yarn
+        run: npm install --global yarn@1.22.22
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build app
+        run: yarn build
+        env:
+          REACT_APP_SMART_CLIENT_ID: ${{ vars.REACT_APP_SMART_CLIENT_ID }}
+          REACT_APP_SMART_SCOPE: ${{ vars.REACT_APP_SMART_SCOPE }}
+
+      - name: Deploy app
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: build
+          api_location: ""
+          output_location: ""
+          skip_app_build: true
+          skip_api_build: true
